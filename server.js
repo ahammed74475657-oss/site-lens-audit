@@ -1,5 +1,6 @@
 import dns from "node:dns/promises";
 import net from "node:net";
+import { pathToFileURL } from "node:url";
 import express from "express";
 import * as cheerio from "cheerio";
 
@@ -10,6 +11,14 @@ const REQUEST_TIMEOUT_MS = 10000;
 
 app.use(express.json({ limit: "32kb" }));
 app.use(express.static("public"));
+
+app.get("/api/health", (_req, res) => {
+  res.json({
+    ok: true,
+    name: "site-lens-audit",
+    version: "1.0.0"
+  });
+});
 
 app.post("/api/audit", async (req, res) => {
   try {
@@ -28,18 +37,25 @@ app.post("/api/audit", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Site Lens Audit running at http://127.0.0.1:${PORT}`);
-});
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
+  app.listen(PORT, () => {
+    console.log(`Site Lens Audit running at http://127.0.0.1:${PORT}`);
+  });
+}
 
 function normalizeUrl(rawUrl) {
   if (typeof rawUrl !== "string" || !rawUrl.trim()) {
     throw publicError("Enter a URL to audit.");
   }
 
-  const withProtocol = /^https?:\/\//i.test(rawUrl.trim())
-    ? rawUrl.trim()
-    : `https://${rawUrl.trim()}`;
+  const trimmedUrl = rawUrl.trim();
+  const hasScheme = /^[a-z][a-z0-9+.-]*:/i.test(trimmedUrl);
+
+  if (hasScheme && !/^https?:\/\//i.test(trimmedUrl)) {
+    throw publicError("Only HTTP and HTTPS URLs are supported.");
+  }
+
+  const withProtocol = hasScheme ? trimmedUrl : `https://${trimmedUrl}`;
 
   let url;
   try {
@@ -369,3 +385,11 @@ function publicError(publicMessage, statusCode = 400) {
   error.statusCode = statusCode;
   return error;
 }
+
+export {
+  analyzeHtml,
+  app,
+  formatBytes,
+  isPrivateAddress,
+  normalizeUrl
+};
