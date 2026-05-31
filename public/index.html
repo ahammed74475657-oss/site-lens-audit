@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Local website audit tool for SEO, accessibility and frontend quality checks.">
+  <title>Site Lens Audit</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="topbar">
+    <a class="brand" href="/">
+      <span class="brand-mark">SL</span>
+      <span>Site Lens Audit</span>
+    </a>
+    <nav aria-label="Page sections">
+      <a href="#audit">Audit</a>
+      <a href="#results">Results</a>
+      <a href="#exports">Export</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Local website audit</p>
+        <h1>Check the parts of a page that usually get missed before launch.</h1>
+        <p class="lede">Run a local audit for SEO basics, accessibility issues and estimated frontend performance. No account, no database, no Lighthouse dependency in this MVP.</p>
+      </div>
+      <aside class="hero-panel" aria-label="Audit capabilities">
+        <div><strong>SEO</strong><span>metadata, headings, links, social tags</span></div>
+        <div><strong>A11y</strong><span>alt text, labels, language, controls</span></div>
+        <div><strong>Quality</strong><span>HTML weight, scripts, CSS, viewport</span></div>
+      </aside>
+    </section>
+
+    <section id="audit" class="audit-shell">
+      <form id="auditForm" class="audit-form">
+        <label for="urlInput">Website URL</label>
+        <div class="input-row">
+          <input id="urlInput" name="url" type="url" placeholder="https://example.com" autocomplete="url" required>
+          <button id="auditButton" type="submit">Run audit</button>
+        </div>
+        <p id="formMessage" class="form-message">Public HTTP and HTTPS pages only. Local/private network URLs are blocked.</p>
+      </form>
+    </section>
+
+    <section id="results" class="results empty-state" aria-live="polite">
+      <div class="empty-copy">
+        <p class="eyebrow">Waiting for a URL</p>
+        <h2>Your report will appear here.</h2>
+        <p>Start with a homepage, landing page or article URL. The tool will fetch HTML, inspect the document and return prioritized suggestions.</p>
+      </div>
+    </section>
+
+    <section id="exports" class="export-panel" hidden>
+      <div>
+        <p class="eyebrow">Export</p>
+        <h2>Save the report</h2>
+      </div>
+      <div class="export-actions">
+        <button id="exportJson" type="button">Download JSON</button>
+        <button id="exportMarkdown" type="button" class="secondary">Download Markdown</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
